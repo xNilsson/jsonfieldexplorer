@@ -1,0 +1,39 @@
+{
+  "name": "jsonfieldexplorer",
+  "version": "0.1.0",
+  "description": " Node.js tool to efficiently explore and list all field paths in a JSON object. Perfect for understanding complex JSON structures, it recursively analyzes JSON data to provide a clear summary of nested fields and arrays.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "jfe": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnille/jsonfieldexplorer.git"
+  },
+  "keywords": [
+    "json",
+    "field-explorer",
+    "path-finder",
+    "json-structure",
+    "json-analysis",
+    "data-mapping",
+    "json-tool",
+    "nested-json",
+    "json-traversal",
+    "json-utility",
+    "structure-visualization",
+    "json-path",
+    "json-parser",
+    "developer-tools",
+    "json-navigator"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cnille/jsonfieldexplorer/issues"
+  },
+  "homepage": "https://github.com/cnille/jsonfieldexplorer#readme"
+}
