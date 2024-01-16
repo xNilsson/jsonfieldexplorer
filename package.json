@@ -1,6 +1,6 @@
 {
   "name": "jsonfieldexplorer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": " Node.js tool to efficiently explore and list all field paths in a JSON object. Perfect for understanding complex JSON structures, it recursively analyzes JSON data to provide a clear summary of nested fields and arrays.",
   "main": "index.js",
   "scripts": {
