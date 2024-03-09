@@ -26,8 +26,9 @@ You can also pipe in JSON.
 
 ```bash
 $ echo '{"a": [{"b": true}]}' | jfe
-a
-a[].b
+.a: array
+.a[]: object
+.a[].b: boolean
 ```
 
 # Examples
@@ -42,11 +43,17 @@ Given a JSON file like this:
     "departments": [
       {
         "name": "Research",
-        "employees": 100
+        "employees": 10,
+        "isRemote": true
       },
       {
         "name": "Engineering",
-        "employees": 80
+        "employees": "80",
+        "budget": null,
+        "manager": {
+          "name": "John Doe",
+          "title": "Engineering Manager"
+        }
       }
     ]
   }
@@ -56,13 +63,39 @@ Given a JSON file like this:
 Running jfe on this file would produce output similar to the following:
 
 ```css
-organization.name
-organization.location
-organization.departments[].name
-orgrnization.departments[].employees
+.organization: object
+.organization.name: string
+.organization.location: string
+.organization.departments: array
+.organization.departments[]: object
+.organization.departments[].name: string
+.organization.departments[].employees: number | string
+.organization.departments[].isRemote: boolean
+.organization.departments[].budget: null
+.organization.departments[].manager: object
+.organization.departments[].manager.name: string
+.organization.departments[].manager.title: string
 ```
 
 This output indicates that the JSON file contains fields for the organization's name and location, as well as an array of departments, each with its own name and number of employees.
+
+# Roadmap
+
+For future roadmap, features that could be implemented are;
+
+- Show types in order of usage.
+- Show enum if variation is small in type.
+- Provide a "stat" command to show statistics about the values. Like most common strings (if enum), or min/max/average for numbers.
+
+If you want to contribute with any of these, feel free to send a PR!
+
+# Testing
+
+Test files are included in `/test`. To run test:
+
+```bash
+npm test
+```
 
 # License
 

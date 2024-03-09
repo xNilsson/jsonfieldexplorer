@@ -1,37 +1,12 @@
 #!/usr/bin/env node
 const fs = require("fs");
-
+const { processJson } = require("./jfe");
 function usageInstructions() {
   // Either path to file, or pipe JSON to stdin
   console.log("Usage: ");
   console.log("\tjfe <path-to-file>");
   console.log("\tcat <path-to-file> | jfe");
   console.log('\techo \'{"a": [{"b": true}]}\' | jfe');
-}
-
-function summarizePaths(jsonObj, prefix = "", paths = []) {
-  if (Array.isArray(jsonObj)) {
-    // Handle arrays: Add "[]" to the path and process the first element (if exists)
-    if (jsonObj.length > 0) {
-      summarizePaths(jsonObj[0], `${prefix}[]`, paths);
-    }
-  } else if (typeof jsonObj === "object" && jsonObj !== null) {
-    Object.keys(jsonObj).forEach((key) => {
-      const path = `${prefix}${prefix ? "." : ""}${key}`;
-      paths.push(path);
-      summarizePaths(jsonObj[key], path, paths);
-    });
-  }
-  return paths;
-}
-
-function processJson(json) {
-  try {
-    const paths = summarizePaths(json);
-    console.log(paths.join("\n"));
-  } catch (error) {
-    console.error("Error processing JSON:", error.message);
-  }
 }
 
 function readFile(filePath) {
@@ -46,7 +21,7 @@ function readFile(filePath) {
 }
 
 function parseStdin() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     if (process.stdin.isTTY) {
       usageInstructions();
       process.exit(1);
@@ -73,3 +48,7 @@ async function main() {
 }
 
 main();
+
+module.exports = {
+  processJson,
+};

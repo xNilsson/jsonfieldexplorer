@@ -1,0 +1,22 @@
+{
+  "organization": {
+    "name": "OpenAI",
+    "location": "San Francisco",
+    "departments": [
+      {
+        "name": "Research",
+        "employees": 10,
+        "isRemote": true
+      },
+      {
+        "name": "Engineering",
+        "employees": "80",
+        "budget": null,
+        "manager": {
+          "name": "John Doe",
+          "title": "Engineering Manager"
+        }
+      }
+    ]
+  }
+}
