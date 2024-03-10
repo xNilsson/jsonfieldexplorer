@@ -14,6 +14,8 @@ npm install -g jsonfieldexplorer
 
 This will install jfe globally on your system, allowing you to use it from any directory.
 
+Requires minimum of node 18.x.
+
 # Usage
 
 To use jfe, simply pass the path of your JSON file as an argument:
