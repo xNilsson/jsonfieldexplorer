@@ -68,7 +68,7 @@ Running jfe on this file would produce output similar to the following:
 .organization: object
 .organization.name: string
 .organization.location: string
-.organization.departments: array
+.organization.departments: array (size: 2)
 .organization.departments[]: object
 .organization.departments[].name: string
 .organization.departments[].employees: number | string

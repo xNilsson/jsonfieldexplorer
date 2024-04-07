@@ -37,10 +37,12 @@ function summarizePaths(jsonObj, prefix = "", paths = {}) {
 
 function pathsToLines(paths) {
   const lines = [];
+  const arrayLengths = new Set();
   for (const path in paths) {
     const values = paths[path];
     const valueTypes = values.map((value) => {
       if (Array.isArray(value)) {
+        arrayLengths.add(value.length);
         return "array";
       } else if (value === null) {
         return "null";
@@ -53,6 +55,14 @@ function pathsToLines(paths) {
       uniqueValueTypes.length === 1
         ? uniqueValueTypes[0]
         : `${uniqueValueTypes.join(" | ")}`;
+
+    // Show array lengths for arrays with consistent lengths
+    if (valueType === "array" && arrayLengths.size === 1) {
+      const l = [...arrayLengths][0];
+      lines.push(`${path}: ${valueType} (size: ${l})`);
+      continue;
+    }
+
     lines.push(`${path}: ${valueType}`);
   }
   return lines;
