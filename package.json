@@ -40,8 +40,11 @@
   },
   "homepage": "https://github.com/cnille/jsonfieldexplorer#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.24.4",
     "@faker-js/faker": "^8.4.1",
+    "babel-jest": "^29.7.0",
     "benchmark": "^2.1.4",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2"
   }
 }
