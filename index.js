@@ -1,23 +1,13 @@
 #!/usr/bin/env node
-const fs = require("fs");
-const { processJson } = require("./jfe");
+import { processJson } from "./jfe.js";
+import { readFile } from "./file.js";
+
 function usageInstructions() {
   // Either path to file, or pipe JSON to stdin
   console.log("Usage: ");
   console.log("\tjfe <path-to-file>");
   console.log("\tcat <path-to-file> | jfe");
   console.log('\techo \'{"a": [{"b": true}]}\' | jfe');
-}
-
-function readFile(filePath) {
-  try {
-    const data = fs.readFileSync(filePath, "utf8");
-    const json = JSON.parse(data);
-    return json;
-  } catch (error) {
-    console.error("Error reading or parsing JSON file:", error.message);
-    process.exit(1);
-  }
 }
 
 function parseStdin() {
@@ -48,7 +38,3 @@ async function main() {
 }
 
 main();
-
-module.exports = {
-  processJson,
-};

@@ -1,4 +1,4 @@
-function summarizePaths(jsonObj, prefix = "", paths = {}) {
+export function summarizePaths(jsonObj, prefix = "", paths = {}) {
   if (Array.isArray(jsonObj)) {
     // Handle arrays: Add "[]" to the path and process the first element (if exists)
     if (jsonObj.length > 0) {
@@ -35,7 +35,7 @@ function summarizePaths(jsonObj, prefix = "", paths = {}) {
   return paths;
 }
 
-function pathsToLines(paths) {
+export function pathsToLines(paths) {
   const lines = [];
   const arrayLengths = new Set();
   for (const path in paths) {
@@ -68,7 +68,7 @@ function pathsToLines(paths) {
   return lines;
 }
 
-function processJson(jsonObject) {
+export function processJson(jsonObject) {
   try {
     const paths = summarizePaths(jsonObject);
     const lines = pathsToLines(paths);
@@ -79,5 +79,3 @@ function processJson(jsonObject) {
     console.error("Error processing JSON:", error.message);
   }
 }
-
-module.exports = { summarizePaths, pathsToLines, processJson };
