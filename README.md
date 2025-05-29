@@ -99,6 +99,24 @@ Test files are included in `/test`. To run test:
 npm test
 ```
 
+# Benchmarking
+
+Benchmarking is done with [benchmark.js](https://benchmarkjs.com/).
+
+To run benchmark:
+
+```bash
+npm run benchmark
+```
+
+Current benchmark results:
+
+
+| File size | Average time per operation | Number of runs sampled | Throughput |
+| --------- | -------------------------- | ---------------------- | ---------- |
+| 421.27 MB | 3963.35 ms                 | 5                      | 106.29 MB/s |
+
+
 # License
 
 This project is licensed under the ISC License - see the LICENSE.md file for details.
