@@ -11,7 +11,7 @@ _Target: Next 2-4 weeks_
 - [ ] Support `--version` flag
 - [ ] Add `--format` flag for output format selection
 - [ ] Support multiple file inputs
-- [ ] Add `--quiet` mode for minimal output
+- [x] Add `--quiet` mode for minimal output
 - [ ] Add `--verbose` mode for detailed analysis
 - [ ] Add `--output` flag to write results to file
 

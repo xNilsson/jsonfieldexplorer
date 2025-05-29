@@ -141,12 +141,14 @@ export function pathsToLines(paths) {
   return lines;
 }
 
-export function processJson(jsonObject) {
+export function processJson(jsonObject, options = {}) {
   try {
     const paths = summarizePaths(jsonObject);
     const lines = pathsToLines(paths);
-    for (const line of lines) {
-      console.log(line);
+    if (!options.quiet) {
+      for (const line of lines) {
+        console.log(line);
+      }
     }
   } catch (error) {
     console.error("Error processing JSON:", error.message);
