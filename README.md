@@ -42,7 +42,94 @@ jfe --help                    # Show help and all options
 jfe --version                 # Show version
 jfe --max-depth 3 file.json   # Limit analysis to 3 levels deep
 jfe --quiet file.json         # Suppress output (useful for benchmarking)
+jfe --stats file.json         # Show detailed statistics for field values
+jfe --interactive file.json   # Start interactive exploration mode
 ```
+
+### Advanced Features
+
+#### Enum Detection
+When jfe detects that a field has a small number of unique values (≤10 by default), it displays them as an enum:
+
+```bash
+$ jfe users.json
+.users[].status: enum ["active", "inactive", "pending"] (3 values)
+.users[].role: enum ["admin", "user"] (2 values)
+```
+
+#### Statistics Mode (`--stats`)
+Get detailed statistical information about field values:
+
+```bash
+$ jfe --stats products.json
+.products[].price: number (5 total, min: 24.99, max: 129.99, avg: 74.99, sum: 374.95)
+.products[].name: string (5 total, unique: 5, avgLen: 13.4, most common: "Widget" (2x))
+.products[].inStock: boolean (5 total, true: 4, false: 1)
+```
+
+#### Interactive Mode (`--interactive`)
+Explore JSON structures interactively with filtering, sorting, and real-time analysis:
+
+```bash
+$ jfe --interactive data.json
+🔍 JSON Field Explorer - Interactive Mode
+Type 'help' for available commands, 'exit' to quit
+
+Showing 15 field(s):
+.company: object
+.company.name: string
+.company.employees: array (size: 100)
+...
+
+jfe> help
+Available commands:
+  help                 - Show this help message
+  list                 - Show all fields (current view)
+  filter <pattern>     - Filter fields by path pattern (regex supported)
+  sort <method>        - Sort by: path, type, alpha
+  stats                - Toggle statistics mode
+  depth <number>       - Set max depth (use 'all' for unlimited)
+  search <term>        - Quick search for fields containing term
+  count                - Show count of current results
+  reset                - Reset all filters and settings
+  exit                 - Exit interactive mode
+
+jfe> filter employees
+Showing 8 field(s):
+.company.employees: array (size: 100)
+.company.employees[]: object
+.company.employees[].name: string
+...
+
+jfe> stats
+Statistics mode: ON
+.company.employees[].age: number (100 total, min: 22, max: 65, avg: 41.2, sum: 4120)
+.company.employees[].salary: number (100 total, min: 35000, max: 150000, avg: 72500)
+
+jfe> search address
+Filter set to: address
+.company.employees[].address: object
+.company.employees[].address.street: string
+.company.employees[].address.city: string
+
+jfe> exit
+Goodbye! 👋
+```
+
+##### Interactive Commands Reference
+
+| Command | Description | Examples |
+|---------|-------------|----------|
+| `help` | Show available commands | `help` |
+| `list` | Display current filtered view | `list` |
+| `filter <pattern>` | Filter by regex or string pattern | `filter users\[\]`, `filter address` |
+| `search <term>` | Quick search (alias for filter) | `search email`, `search phone` |
+| `sort <method>` | Sort results (`path`, `type`, `alpha`) | `sort type`, `sort alpha` |
+| `stats` | Toggle statistics mode on/off | `stats` |
+| `depth <n>` | Set max depth or `all` | `depth 3`, `depth all` |
+| `count` | Show number of matching fields | `count` |
+| `reset` | Clear all filters and settings | `reset` |
+| `exit` | Exit interactive mode | `exit` or `quit` |
 
 # Examples
 
@@ -94,17 +181,66 @@ This output indicates that the JSON file contains fields for the organization's 
 
 # Roadmap
 
-For future roadmap, features that could be implemented are;
+## ✅ Completed Features
 
-- Show types in order of usage.
-- Show enum if variation is small in type.
-- Provide a "stat" command to show statistics about the values. Like most common strings (if enum), or min/max/average for numbers.
+- **CLI Framework**: Proper argument parsing with commander.js
+- **Enhanced Options**: `--help`, `--version`, `--max-depth`, `--quiet` flags
+- **Enum Detection**: Automatic detection of fields with limited unique values
+- **Statistics Mode**: `--stats` for detailed field analysis (min/max/avg, string lengths, frequencies)
+- **Interactive Mode**: `--interactive` with filtering, sorting, and real-time exploration
+- **Optional Field Detection**: Shows when array elements have inconsistent fields
+- **Error Handling**: Comprehensive error messages and file validation
+- **Test Coverage**: 34+ tests covering all features
+- **Demo Scripts**: Ready-to-run examples
 
-If you want to contribute with any of these, feel free to send a PR!
+## 🚀 Future Development Ideas
 
-# Testing
+### Phase 3: Output & Integration
+- **Multiple Output Formats**: JSON, CSV, XML output options
+- **Path Filtering**: `--filter` and `--exclude` pattern matching
+- **Color Output**: Syntax highlighting with chalk
+- **Progress Indicators**: For large file processing
 
-Test files are included in `/test`. To run test:
+### Advanced Analysis
+- **Pattern Recognition**: Detect emails, URLs, dates, UUIDs automatically  
+- **Schema Generation**: Generate JSON Schema, TypeScript interfaces
+- **File Comparison**: Compare structures between JSON files
+- **Performance**: Streaming parser for very large files (>1GB)
+
+### Developer Integration  
+- **Programmatic API**: Node.js module for integration
+- **VS Code Extension**: IDE integration for JSON files
+- **Configuration**: Support for `.jferc` config files
+- **Plugin System**: Extensible architecture for custom analyzers
+
+### Community & Distribution
+- **Package Managers**: Homebrew, Chocolatey, Docker image
+- **Documentation**: Video tutorials, comprehensive guides
+- **CI/CD**: GitHub Actions, automated releases
+
+*Want to contribute? Pick any feature above and send a PR! Check the issues for discussion on specific features.*
+
+# Testing & Demos
+
+## Running Tests
+
+```bash
+npm test                     # Run unit tests
+npm run demo                 # Run all feature demos
+```
+
+## Demo Scripts
+
+Try out the different features with our sample data:
+
+```bash
+npm run demo:enum           # See enum detection in action
+npm run demo:stats          # See statistics mode
+npm run demo:complex        # Complex nested structure analysis
+npm run demo:interactive    # Interactive mode (requires manual input)
+```
+
+Test files are included in `/test`. To run tests:
 
 ```bash
 npm test
@@ -129,6 +265,14 @@ Current benchmark results:
 
 
 # Changelog
+
+## v0.3.0 🎉
+- ✅ **Enum Detection**: Automatically detects and displays fields with limited unique values as enums
+- ✅ **Statistics Mode**: Added `--stats` flag for detailed field analysis (min/max/avg for numbers, length stats for strings, etc.)
+- ✅ **Interactive Mode**: Added `--interactive` flag for real-time JSON exploration with filtering, sorting, and search
+- ✅ **Demo Scripts**: Added npm run demo scripts to showcase different features 
+- ✅ **Comprehensive Tests**: 34 passing tests covering all features
+- ✅ **Enhanced Documentation**: Complete documentation for all features and interactive commands
 
 ## v0.2.0
 - ✅ **CLI Framework**: Added proper CLI argument parsing with commander.js

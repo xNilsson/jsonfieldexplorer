@@ -1,0 +1,49 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Wireless Headphones",
+      "price": 99.99,
+      "rating": 4.5,
+      "inStock": true,
+      "category": "Electronics",
+      "tags": ["wireless", "audio", "bluetooth"]
+    },
+    {
+      "id": 2,
+      "name": "Running Shoes",
+      "price": 129.99,
+      "rating": 4.2,
+      "inStock": true,
+      "category": "Sports",
+      "tags": ["running", "fitness", "shoes"]
+    },
+    {
+      "id": 3,
+      "name": "Coffee Maker",
+      "price": 79.99,
+      "rating": 3.8,
+      "inStock": false,
+      "category": "Kitchen",
+      "tags": ["coffee", "appliance", "kitchen"]
+    },
+    {
+      "id": 4,
+      "name": "Smartphone Case",
+      "price": 24.99,
+      "rating": 4.1,
+      "inStock": true,
+      "category": "Electronics",
+      "tags": ["phone", "protection", "accessory"]
+    },
+    {
+      "id": 5,
+      "name": "Yoga Mat",
+      "price": 39.99,
+      "rating": 4.7,
+      "inStock": true,
+      "category": "Sports", 
+      "tags": ["yoga", "fitness", "exercise"]
+    }
+  ]
+}

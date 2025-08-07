@@ -1,13 +1,19 @@
 {
   "name": "jsonfieldexplorer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": " Node.js tool to efficiently explore and list all field paths in a JSON object. Perfect for understanding complex JSON structures, it recursively analyzes JSON data to provide a clear summary of nested fields and arrays.",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "jest",
     "generate-benchmark": "node ./generate-benchmark.js",
-    "benchmark": "node ./generate-benchmark.js && node benchmark.js"
+    "benchmark": "node ./generate-benchmark.js && node benchmark.js",
+    "demo": "npm run demo:enum && npm run demo:stats && npm run demo:complex",
+    "demo:enum": "echo '--- Enum Detection Demo ---' && node index.js test/sample-enum.json",
+    "demo:stats": "echo '--- Statistics Mode Demo ---' && node index.js --stats test/sample-stats.json",
+    "demo:complex": "echo '--- Complex Structure Demo ---' && node index.js --max-depth 4 test/sample-complex.json",
+    "demo:all": "echo '--- All Features Demo ---' && node index.js --stats --max-depth 3 test/sample-complex.json",
+    "demo:interactive": "echo '--- Interactive Mode Demo ---' && echo 'Try: help, filter users, stats, search address, exit' && node index.js --interactive test/sample-complex.json"
   },
   "bin": {
     "jfe": "./index.js"
@@ -48,6 +54,7 @@
     "ts-jest": "^29.1.2"
   },
   "dependencies": {
-    "commander": "^14.0.0"
+    "commander": "^14.0.0",
+    "readline-sync": "^1.4.10"
   }
 }

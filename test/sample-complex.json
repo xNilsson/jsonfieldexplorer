@@ -1,0 +1,68 @@
+{
+  "company": {
+    "name": "TechCorp",
+    "founded": 2018,
+    "employees": [
+      {
+        "id": 101,
+        "name": "Sarah Connor",
+        "age": 32,
+        "position": "Software Engineer",
+        "salary": 85000,
+        "active": true,
+        "skills": ["JavaScript", "Python", "React"],
+        "address": {
+          "street": "123 Main St",
+          "city": "San Francisco",
+          "state": "CA",
+          "zipCode": "94105"
+        },
+        "projects": [
+          { "name": "Project Alpha", "status": "completed", "budget": 50000 },
+          { "name": "Project Beta", "status": "in-progress", "budget": 75000 }
+        ]
+      },
+      {
+        "id": 102,
+        "name": "John Doe",
+        "age": 28,
+        "position": "Product Manager",
+        "salary": 92000,
+        "active": true,
+        "skills": ["Product Strategy", "Analytics", "Leadership"],
+        "address": {
+          "street": "456 Oak Ave",
+          "city": "San Francisco",
+          "state": "CA", 
+          "zipCode": "94107"
+        },
+        "projects": [
+          { "name": "Project Gamma", "status": "planning", "budget": 100000 }
+        ]
+      },
+      {
+        "id": 103,
+        "name": "Emily Davis",
+        "age": null,
+        "position": "Designer",
+        "salary": 78000,
+        "active": false,
+        "skills": ["UI/UX", "Figma", "Adobe Creative Suite"],
+        "address": null,
+        "projects": []
+      }
+    ],
+    "offices": [
+      {
+        "location": "San Francisco",
+        "type": "headquarters",
+        "capacity": 200
+      },
+      {
+        "location": "New York", 
+        "type": "branch",
+        "capacity": 50
+      }
+    ]
+  }
+}

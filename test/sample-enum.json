@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "role": "admin",
+      "status": "active",
+      "department": "Engineering"
+    },
+    {
+      "id": 2,
+      "name": "Bob Smith",
+      "role": "user",
+      "status": "active", 
+      "department": "Marketing"
+    },
+    {
+      "id": 3,
+      "name": "Carol White",
+      "role": "admin",
+      "status": "inactive",
+      "department": "Engineering"
+    },
+    {
+      "id": 4,
+      "name": "David Brown",
+      "role": "user", 
+      "status": "pending",
+      "department": "Sales"
+    }
+  ]
+}

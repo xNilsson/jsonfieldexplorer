@@ -2,6 +2,7 @@
 import { Command } from "commander";
 import { processJson } from "./jfe.js";
 import { readFile } from "./file.js";
+import { startInteractiveMode } from "./interactive.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -23,10 +24,17 @@ program
   .option("-f, --format <type>", "output format", "text")
   .option("--max-depth <number>", "maximum recursion depth", parseInt)
   .option("-q, --quiet", "suppress output (useful for benchmarking)")
+  .option("-s, --stats", "show detailed statistics for field values")
+  .option("-i, --interactive", "start interactive exploration mode")
   .action(async (file, options) => {
     try {
       const json = file ? readFile(file) : await parseStdin();
-      processJson(json, options);
+      
+      if (options.interactive) {
+        startInteractiveMode(json, options);
+      } else {
+        processJson(json, options);
+      }
     } catch (error) {
       console.error("Error:", error.message);
       process.exit(1);
