@@ -2,8 +2,19 @@ export function summarizePaths(
   jsonObj,
   prefix = "",
   paths = {},
-  arrayContext = null
+  arrayContext = null,
+  currentDepth = 0,
+  maxDepth = Infinity
 ) {
+  // Stop recursing if we've reached max depth
+  if (currentDepth >= maxDepth) {
+    if (!paths[prefix]) {
+      paths[prefix] = [];
+    }
+    paths[prefix].push("...[max depth reached]");
+    return paths;
+  }
+
   if (Array.isArray(jsonObj)) {
     // Handle arrays: Add "[]" to the path and process all elements
     const arrayPath = prefix || "[]";
@@ -46,7 +57,7 @@ export function summarizePaths(
 
       // Second pass: process each element
       for (let i = 0; i < jsonObj.length; i++) {
-        summarizePaths(jsonObj[i], elementPath, paths, newArrayContext);
+        summarizePaths(jsonObj[i], elementPath, paths, newArrayContext, currentDepth + 1, maxDepth);
       }
     }
   } else if (typeof jsonObj === "object" && jsonObj !== null) {
@@ -61,7 +72,7 @@ export function summarizePaths(
     }
     Object.keys(jsonObj).forEach((key) => {
       const k = key.includes(" ") ? `"${key}"` : key;
-      summarizePaths(jsonObj[key], `${path}.${k}`, paths, arrayContext);
+      summarizePaths(jsonObj[key], `${path}.${k}`, paths, arrayContext, currentDepth + 1, maxDepth);
     });
   } else {
     // base case: add the value to the path
@@ -143,14 +154,18 @@ export function pathsToLines(paths) {
 
 export function processJson(jsonObject, options = {}) {
   try {
-    const paths = summarizePaths(jsonObject);
+    const maxDepth = options.maxDepth || Infinity;
+    const paths = summarizePaths(jsonObject, "", {}, null, 0, maxDepth);
     const lines = pathsToLines(paths);
+    
     if (!options.quiet) {
       for (const line of lines) {
         console.log(line);
       }
     }
+    
+    return { paths, lines }; // Return data for programmatic use
   } catch (error) {
-    console.error("Error processing JSON:", error.message);
+    throw new Error(`Error processing JSON: ${error.message}`);
   }
 }

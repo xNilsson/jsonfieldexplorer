@@ -1,22 +1,45 @@
 #!/usr/bin/env node
+import { Command } from "commander";
 import { processJson } from "./jfe.js";
 import { readFile } from "./file.js";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
-function usageInstructions() {
-  // Either path to file, or pipe JSON to stdin
-  console.log("Usage: ");
-  console.log("\tjfe <path-to-file>");
-  console.log("\tcat <path-to-file> | jfe");
-  console.log('\techo \'{"a": [{"b": true}]}\' | jfe');
-}
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-function parseStdin() {
-  return new Promise((resolve) => {
-    if (process.stdin.isTTY) {
-      usageInstructions();
+// Read package.json to get version
+const packagePath = join(__dirname, "package.json");
+const packageJson = JSON.parse(readFileSync(packagePath, "utf8"));
+
+const program = new Command();
+
+program
+  .name("jfe")
+  .description("JSON Field Explorer - analyze and explore JSON structure")
+  .version(packageJson.version)
+  .argument("[file]", "JSON file to analyze (omit to read from stdin)")
+  .option("-f, --format <type>", "output format", "text")
+  .option("--max-depth <number>", "maximum recursion depth", parseInt)
+  .option("-q, --quiet", "suppress output (useful for benchmarking)")
+  .action(async (file, options) => {
+    try {
+      const json = file ? readFile(file) : await parseStdin();
+      processJson(json, options);
+    } catch (error) {
+      console.error("Error:", error.message);
       process.exit(1);
     }
-    // If no file name is provided, listen to standard input
+  });
+
+function parseStdin() {
+  return new Promise((resolve, reject) => {
+    if (process.stdin.isTTY) {
+      program.help();
+      process.exit(1);
+    }
+    
     let inputData = "";
     process.stdin.on("data", (chunk) => (inputData += chunk));
     process.stdin.on("end", () => {
@@ -24,17 +47,13 @@ function parseStdin() {
         const json = JSON.parse(inputData);
         resolve(json);
       } catch (error) {
-        console.error("Error parsing JSON from standard input:", error.message);
-        process.exit(1);
+        reject(new Error(`Invalid JSON from stdin: ${error.message}`));
       }
+    });
+    process.stdin.on("error", (error) => {
+      reject(new Error(`Error reading from stdin: ${error.message}`));
     });
   });
 }
 
-async function main() {
-  const filePath = process.argv[2];
-  const json = filePath ? readFile(filePath) : await parseStdin();
-  processJson(json);
-}
-
-main();
+program.parse();

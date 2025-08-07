@@ -18,19 +18,30 @@ Requires minimum of node 18.x.
 
 # Usage
 
+## Basic Usage
+
 To use jfe, simply pass the path of your JSON file as an argument:
 
 ```bash
 jfe path/to/yourfile.json
 ```
 
-You can also pipe in JSON.
+You can also pipe in JSON:
 
 ```bash
 $ echo '{"a": [{"b": true}]}' | jfe
 .a: array
 .a[]: object
 .a[].b: boolean
+```
+
+## Options
+
+```bash
+jfe --help                    # Show help and all options
+jfe --version                 # Show version
+jfe --max-depth 3 file.json   # Limit analysis to 3 levels deep
+jfe --quiet file.json         # Suppress output (useful for benchmarking)
 ```
 
 # Examples
@@ -116,6 +127,21 @@ Current benchmark results:
 | --------- | -------------------------- | ---------------------- | ---------- |
 | 421.27 MB | 3963.35 ms                 | 5                      | 106.29 MB/s |
 
+
+# Changelog
+
+## v0.2.0
+- ✅ **CLI Framework**: Added proper CLI argument parsing with commander.js
+- ✅ **New Options**: Added `--version`, `--help`, `--max-depth`, `--quiet` flags
+- ✅ **Better Error Handling**: Improved error messages for missing files, invalid JSON, and permissions
+- ✅ **ES Module Compatibility**: Fixed test compatibility issues
+- ✅ **Depth Limiting**: Added `--max-depth` to prevent infinite recursion on large objects
+
+## v0.1.5
+- Basic JSON field exploration functionality
+- Support for stdin input
+- Optional field detection in arrays
+- Array size reporting
 
 # License
 

@@ -1,5 +1,5 @@
-const assert = require("assert").strict;
-const { processJson, summarizePaths } = require("../jfe");
+import assert from "assert";
+import { processJson, summarizePaths } from "../jfe.js";
 
 describe("summarizePaths", () => {
   it("should handle simple objects", () => {
