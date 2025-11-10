@@ -1,3 +1,11 @@
+// ANSI color codes
+const colors = {
+  cyan: (text) => `\x1b[36m${text}\x1b[0m`,
+  bold: (text) => `\x1b[1m${text}\x1b[0m`,
+  gray: (text) => `\x1b[90m${text}\x1b[0m`,
+  cyanBold: (text) => `\x1b[36;1m${text}\x1b[0m`,
+};
+
 export function summarizePaths(
   jsonObj,
   prefix = "",
@@ -150,17 +158,72 @@ function calculateStatistics(values, type) {
   return stats;
 }
 
+function truncateString(str, maxLength = 50) {
+  if (str.length <= maxLength) {
+    return str;
+  }
+  return str.substring(0, maxLength - 3) + '...';
+}
+
+function formatPathWithType(path, typeInfo, options = {}) {
+  // Disable colors if:
+  // - Explicitly disabled via options.color === false
+  // - quiet mode is enabled
+  // - NO_COLOR env var is set
+  // - stdout is not a TTY (piped output or test environment)
+  const useColors = options.color !== false &&
+                    !options.quiet &&
+                    !process.env.NO_COLOR &&
+                    process.stdout.isTTY;
+
+  // If colors are disabled, return simple format for backwards compatibility
+  if (!useColors) {
+    return `${path}: ${typeInfo}`;
+  }
+
+  const terminalWidth = process.stdout.columns || 120;
+
+  // Split path to get parts and highlight the last part
+  const pathParts = path.split('.');
+  let formattedPath;
+
+  if (pathParts.length > 0) {
+    const lastPart = pathParts.pop();
+    const prefix = pathParts.length > 0 ? pathParts.join('.') + '.' : '';
+    formattedPath = prefix + colors.cyanBold(lastPart);
+  } else {
+    formattedPath = path;
+  }
+
+  // Calculate padding to right-align the type
+  const pathLength = path.length; // Use raw path length for alignment calculations
+  const typeLength = typeInfo.length;
+  const colonAndSpaces = 2; // ": "
+  const minPadding = 2;
+
+  let padding = terminalWidth - pathLength - colonAndSpaces - typeLength - minPadding;
+
+  // If type is too long, just add minimum padding
+  if (padding < minPadding) {
+    padding = minPadding;
+  }
+
+  const grayedType = colors.gray(typeInfo);
+
+  return `${formattedPath}: ${' '.repeat(padding)}${grayedType}`;
+}
+
 function formatStatistics(stats, fieldName) {
   if (!stats.hasData) {
     return `${fieldName}: ${stats.type} (${stats.count} total, all null)`;
   }
 
   let result = `${fieldName}: ${stats.type} (${stats.count} total`;
-  
+
   if (stats.nullCount > 0) {
     result += `, ${stats.nullCount} null`;
   }
-  
+
   result += ", ";
 
   if (stats.type === "number") {
@@ -266,26 +329,55 @@ export function pathsToLines(paths, options = {}) {
       // Get the non-null types
       const nonNullTypes = [...new Set(primitiveValues.filter(v => v !== null).map(v => typeof v))];
       
-      if (nonNullTypes.length === 1 && 
+      if (nonNullTypes.length === 1 &&
           (nonNullTypes[0] === "string" || nonNullTypes[0] === "number" || nonNullTypes[0] === "boolean")) {
         const stats = calculateStatistics(primitiveValues, nonNullTypes[0]);
-        let statLine = formatStatistics(stats, path);
-        
+        let statInfo = `${stats.type} (${stats.count} total`;
+
+        if (stats.nullCount > 0) {
+          statInfo += `, ${stats.nullCount} null`;
+        }
+
+        statInfo += ", ";
+
+        if (stats.type === "number") {
+          statInfo += `min: ${stats.min}, max: ${stats.max}, avg: ${stats.avg.toFixed(2)}`;
+          if (stats.sum !== undefined) {
+            statInfo += `, sum: ${stats.sum}`;
+          }
+        } else if (stats.type === "string") {
+          statInfo += `unique: ${stats.uniqueCount}, avgLen: ${stats.avgLength.toFixed(1)}`;
+          if (stats.mostCommon && stats.mostCommon.length > 0) {
+            const topValue = stats.mostCommon[0];
+            statInfo += `, most common: "${topValue[0]}" (${topValue[1]}x)`;
+          }
+        } else if (stats.type === "boolean") {
+          statInfo += `true: ${stats.trueCount}, false: ${stats.falseCount}`;
+        } else {
+          statInfo += `unique: ${stats.uniqueCount}`;
+        }
+
+        statInfo += ")";
+
         // Add optional marker if field is not present in all array elements
         if (isOptional) {
-          statLine += " | optional";
+          statInfo += " | optional";
         }
-        
-        lines.push(statLine);
+
+        lines.push(formatPathWithType(path, statInfo, options));
         continue;
       }
     }
     
     if (enumInfo) {
-      // Format enum values with proper quotes for strings
-      const formattedValues = enumInfo.values.map(v => 
-        typeof v === "string" ? `"${v}"` : String(v)
-      );
+      // Format enum values with proper quotes for strings and truncate long strings
+      const formattedValues = enumInfo.values.map(v => {
+        if (typeof v === "string") {
+          const truncated = truncateString(v, 50);
+          return `"${truncated}"`;
+        }
+        return String(v);
+      });
       valueType = `enum [${formattedValues.join(", ")}] (${enumInfo.count} values)`;
     }
 
@@ -301,11 +393,11 @@ export function pathsToLines(paths, options = {}) {
       arrayLengths.size === 1
     ) {
       const l = [...arrayLengths][0];
-      lines.push(`${path}: ${valueType} (size: ${l})`);
+      lines.push(formatPathWithType(path, `${valueType} (size: ${l})`, options));
       continue;
     }
 
-    lines.push(`${path}: ${valueType}`);
+    lines.push(formatPathWithType(path, valueType, options));
   }
   return lines;
 }
